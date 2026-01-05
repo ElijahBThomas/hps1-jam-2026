@@ -4,7 +4,7 @@ extends SpringArm3D
 
 const SPEED : float = 500.0
 const EASE : float = 50.0
-const Y_OFFSET : float = 2.0
+var y_offset : float = 2.0
 
 var move_input : Vector2 = Vector2.ZERO
 var controller_sensitivity : float = 2.0
@@ -13,7 +13,7 @@ var controller_sensitivity : float = 2.0
 var menu_visible : bool = false
 
 func follow_target(delta):
-	var target: Vector3 = Vector3(player.global_position.x, player.global_position.y + Y_OFFSET, player.global_position.z)
+	var target: Vector3 = Vector3(player.global_position.x, player.global_position.y + y_offset, player.global_position.z)
 	global_position = lerp(global_position, target, 5 * delta)
 
 func controller_rotation(delta):
@@ -25,16 +25,37 @@ func controller_rotation(delta):
 
 # Handles camera rotation with the mouse
 func _input(event):
-	if event is InputEventMouseMotion && Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-		rotate(Vector3.UP, event.relative.x * -0.001)
-		transform = transform.orthonormalized()
+	match Globals.state:
+		Globals.STATE.CAST:
+			pass
+		Globals.STATE.WALK:
+			if event is InputEventMouseMotion && Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+				rotate(Vector3.UP, event.relative.x * -0.001)
+				transform = transform.orthonormalized()
+
+#func cast_cam_rotation(delta):
+	#move_input.x = Input.get_action_strength("move_left") - Input.get_action_strength("move_right")
+	#
+	#var move_dir = move_input.normalized()
+	#rotate(Vector3.UP, move_dir.x * controller_sensitivity * delta)
+	#pass
 
 func _ready():
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 func _physics_process(delta):
-	follow_target(delta)
-	controller_rotation(delta)
+	match(Globals.state):
+		Globals.STATE.WALK:
+			spring_length = -4 #move to state transition function
+			y_offset = 2 #move to state transition function
+			follow_target(delta)
+			controller_rotation(delta)
+		Globals.STATE.CAST:
+			spring_length = -6 #move to state transition function
+			y_offset = 4 #move to state transition function
+			follow_target(delta)
+			global_rotation = player.mesh.global_rotation
+			pass
 
 func _process(_delta):
 	# Regaining mouse control when pressing escape and set up for later menu work

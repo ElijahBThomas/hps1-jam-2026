@@ -1,11 +1,15 @@
-[gd_scene load_steps=21 format=3 uid="uid://dkdwmjg42hf7i"]
+[gd_scene load_steps=28 format=3 uid="uid://dkdwmjg42hf7i"]
 
+[ext_resource type="Script" uid="uid://c6w44o6p1pv3o" path="res://scripts/Globals.gd" id="1_1jowa"]
 [ext_resource type="Shader" uid="uid://cf6vwpec67i6k" path="res://Art/Shaders/Godot-PSX-Visuals-main/Shaders/PSX Surface.gdshader" id="1_4snwc"]
 [ext_resource type="Texture2D" uid="uid://betmxvsifh2ph" path="res://Art/Placeholders/TemplateGrid_albedo.png" id="2_ed2pg"]
 [ext_resource type="PackedScene" uid="uid://cl5qipqdd3cf8" path="res://Prefeb/Player.tscn" id="3_ed2pg"]
 [ext_resource type="Shader" uid="uid://ceurxunkjgp56" path="res://Art/Shaders/TToT/BasePSX_Scroll.gdshader" id="5_g0pj6"]
-[ext_resource type="Script" uid="uid://cckssft4232i4" path="res://Scripts/CamController.gd" id="5_rdsav"]
+[ext_resource type="Script" uid="uid://cckssft4232i4" path="res://scripts/CamController.gd" id="5_rdsav"]
+[ext_resource type="Script" uid="uid://cywrpw3xvyn4h" path="res://scripts/cast_reticle.gd" id="6_4e6cy"]
 [ext_resource type="Texture2D" uid="uid://c027m0i2hmcl2" path="res://Art/Placeholders/TEX_Water.png" id="6_7oy3y"]
+[ext_resource type="Script" uid="uid://dug0imb1lxd23" path="res://scripts/spring_arm_3d.gd" id="6_77oos"]
+[ext_resource type="Texture2D" uid="uid://down4rerwshm8" path="res://Art/Placeholders/icon.svg" id="7_77oos"]
 
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_g0pj6"]
 data = PackedVector3Array(-25, 0.5, 25, 25, 0.5, 25, -25, -0.5, 25, 25, 0.5, 25, 25, -0.5, 25, -25, -0.5, 25, 25, 0.5, -25, -25, 0.5, -25, 25, -0.5, -25, -25, 0.5, -25, -25, -0.5, -25, 25, -0.5, -25, 25, 0.5, 25, 25, 0.5, -25, 25, -0.5, 25, 25, 0.5, -25, 25, -0.5, -25, 25, -0.5, 25, -25, 0.5, -25, -25, 0.5, 25, -25, -0.5, -25, -25, 0.5, 25, -25, -0.5, 25, -25, -0.5, -25, 25, 0.5, 25, -25, 0.5, 25, 25, 0.5, -25, -25, 0.5, 25, -25, 0.5, -25, 25, 0.5, -25, -25, -0.5, 25, 25, -0.5, 25, -25, -0.5, -25, 25, -0.5, 25, 25, -0.5, -25, -25, -0.5, -25)
@@ -67,6 +71,20 @@ size = Vector2(50, 50)
 subdivide_width = 25
 subdivide_depth = 25
 
+[sub_resource type="SphereMesh" id="SphereMesh_1jowa"]
+radius = 0.25
+height = 0.5
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0rqgs"]
+render_priority = 0
+shader = ExtResource("1_4snwc")
+shader_parameter/albedo = ExtResource("7_77oos")
+shader_parameter/emissionTint = Color(0, 0, 0, 0)
+shader_parameter/albedoTint = Color(1, 1, 1, 1)
+shader_parameter/alpha_scissor = 1.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_1jowa"]
+
 [sub_resource type="SphereShape3D" id="SphereShape3D_rdsav"]
 
 [sub_resource type="Environment" id="Environment_ed2pg"]
@@ -75,6 +93,7 @@ ambient_light_source = 1
 reflected_light_source = 1
 
 [node name="World" type="Node3D"]
+script = ExtResource("1_1jowa")
 
 [node name="Ground" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
@@ -153,6 +172,30 @@ mesh = SubResource("PlaneMesh_1dj0o")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6163278, 0)
 cam_crane = NodePath("../CameraCrane")
 
+[node name="SpringArm3D" type="SpringArm3D" parent="Player"]
+spring_length = 5.0
+script = ExtResource("6_77oos")
+
+[node name="cast_reticle" type="CharacterBody3D" parent="Player/SpringArm3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5)
+visible = false
+script = ExtResource("6_4e6cy")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Player/SpringArm3D/cast_reticle"]
+cast_shadow = 0
+mesh = SubResource("SphereMesh_1jowa")
+skeleton = NodePath("")
+surface_material_override/0 = SubResource("ShaderMaterial_0rqgs")
+
+[node name="floor_raycast" type="RayCast3D" parent="Player/SpringArm3D/cast_reticle"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
+target_position = Vector3(0, -10, 0)
+collide_with_areas = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player/SpringArm3D/cast_reticle"]
+shape = SubResource("SphereShape3D_1jowa")
+disabled = true
+
 [node name="CameraCrane" type="SpringArm3D" parent="." node_paths=PackedStringArray("player")]
 shape = SubResource("SphereShape3D_rdsav")
 spring_length = -4.0
@@ -163,3 +206,5 @@ player = NodePath("../Player")
 transform = Transform3D(-1, 0, -8.742278e-08, -4.371139e-08, 0.8660254, 0.5, 7.5710346e-08, 0.5, -0.8660254, 0, 2.4374108, -2.6829157)
 environment = SubResource("Environment_ed2pg")
 fov = 60.0
+
+[editable path="Player"]
