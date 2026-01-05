@@ -1,0 +1,56 @@
+[gd_scene load_steps=10 format=3 uid="uid://dkdwmjg42hf7i"]
+
+[ext_resource type="Shader" uid="uid://cf6vwpec67i6k" path="res://Art/Shaders/Godot-PSX-Visuals-main/Shaders/PSX Surface.gdshader" id="1_4snwc"]
+[ext_resource type="Texture2D" uid="uid://betmxvsifh2ph" path="res://Art/Placeholders/TemplateGrid_albedo.png" id="2_ed2pg"]
+[ext_resource type="PackedScene" uid="uid://cl5qipqdd3cf8" path="res://Prefeb/Player.tscn" id="3_ed2pg"]
+[ext_resource type="Script" uid="uid://cckssft4232i4" path="res://Scripts/CamController.gd" id="5_rdsav"]
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_g0pj6"]
+data = PackedVector3Array(-25, 0.5, 25, 25, 0.5, 25, -25, -0.5, 25, 25, 0.5, 25, 25, -0.5, 25, -25, -0.5, 25, 25, 0.5, -25, -25, 0.5, -25, 25, -0.5, -25, -25, 0.5, -25, -25, -0.5, -25, 25, -0.5, -25, 25, 0.5, 25, 25, 0.5, -25, 25, -0.5, 25, 25, 0.5, -25, 25, -0.5, -25, 25, -0.5, 25, -25, 0.5, -25, -25, 0.5, 25, -25, -0.5, -25, -25, 0.5, 25, -25, -0.5, 25, -25, -0.5, -25, 25, 0.5, 25, -25, 0.5, 25, 25, 0.5, -25, -25, 0.5, 25, -25, 0.5, -25, 25, 0.5, -25, -25, -0.5, 25, 25, -0.5, 25, -25, -0.5, -25, 25, -0.5, 25, 25, -0.5, -25, -25, -0.5, -25)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7oy3y"]
+render_priority = 0
+shader = ExtResource("1_4snwc")
+shader_parameter/albedo = ExtResource("2_ed2pg")
+shader_parameter/emissionTint = Color(0, 0, 0, 0)
+shader_parameter/albedoTint = Color(1, 1, 1, 1)
+shader_parameter/alpha_scissor = 1.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_4e6cy"]
+size = Vector3(50, 1, 50)
+subdivide_width = 25
+subdivide_depth = 25
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_rdsav"]
+
+[sub_resource type="Environment" id="Environment_ed2pg"]
+background_mode = 1
+ambient_light_source = 1
+reflected_light_source = 1
+
+[node name="World" type="Node3D"]
+
+[node name="Ground" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground"]
+shape = SubResource("ConcavePolygonShape3D_g0pj6")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground"]
+material_override = SubResource("ShaderMaterial_7oy3y")
+mesh = SubResource("BoxMesh_4e6cy")
+skeleton = NodePath("../..")
+
+[node name="Player" parent="." node_paths=PackedStringArray("cam_crane") instance=ExtResource("3_ed2pg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6163278, 0)
+cam_crane = NodePath("../CameraCrane")
+
+[node name="CameraCrane" type="SpringArm3D" parent="." node_paths=PackedStringArray("player")]
+shape = SubResource("SphereShape3D_rdsav")
+spring_length = -4.0
+script = ExtResource("5_rdsav")
+player = NodePath("../Player")
+
+[node name="Camera3D" type="Camera3D" parent="CameraCrane"]
+transform = Transform3D(-1, 0, -8.742278e-08, -4.371139e-08, 0.8660254, 0.5, 7.5710346e-08, 0.5, -0.8660254, 0, 2.4374108, -2.6829157)
+environment = SubResource("Environment_ed2pg")
+fov = 60.0
