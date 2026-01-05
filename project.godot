@@ -84,7 +84,7 @@ resolution={
 }
 fog_range={
 "type": "vec2",
-"value": Vector2(5, 10)
+"value": Vector2(10, 20)
 }
 fog_color={
 "type": "color",

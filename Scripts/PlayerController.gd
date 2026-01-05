@@ -32,5 +32,8 @@ func update_movement(delta):
 	
 	move_and_slide()
 
+func cast_rod():
+	pass
+
 func _physics_process(delta):
 	update_movement(delta)

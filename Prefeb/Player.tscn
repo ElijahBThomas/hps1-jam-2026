@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://cl5qipqdd3cf8"]
+[gd_scene load_steps=7 format=3 uid="uid://cl5qipqdd3cf8"]
 
 [ext_resource type="Script" uid="uid://brl172jeu5c7x" path="res://Scripts/PlayerController.gd" id="1_5qkgq"]
 [ext_resource type="Shader" uid="uid://cf6vwpec67i6k" path="res://Art/Shaders/Godot-PSX-Visuals-main/Shaders/PSX Surface.gdshader" id="2_wih7u"]
@@ -14,24 +14,6 @@ shader_parameter/alpha_scissor = 1.0
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_1jowa"]
 
-[sub_resource type="Gradient" id="Gradient_icgjy"]
-offsets = PackedFloat32Array(0)
-colors = PackedColorArray(1, 0, 0, 1)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_l0hd3"]
-gradient = SubResource("Gradient_icgjy")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_d5oxj"]
-render_priority = 0
-shader = ExtResource("2_wih7u")
-shader_parameter/albedo = SubResource("GradientTexture1D_l0hd3")
-shader_parameter/emissionTint = Color(0, 0, 0, 0)
-shader_parameter/albedoTint = Color(1, 1, 1, 1)
-shader_parameter/alpha_scissor = 1.0
-
-[sub_resource type="PrismMesh" id="PrismMesh_hlj8m"]
-size = Vector3(1, 0.75, 0.5)
-
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ed2pg"]
 
 [node name="Player" type="CharacterBody3D"]
@@ -40,12 +22,6 @@ script = ExtResource("1_5qkgq")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 material_override = SubResource("ShaderMaterial_77oos")
 mesh = SubResource("CapsuleMesh_1jowa")
-skeleton = NodePath("../..")
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="MeshInstance3D"]
-transform = Transform3D(1, 0, 0, 0, -4.3711392e-08, -1.0000001, 0, 1.0000001, -4.3711392e-08, 0, -0.07175112, 0.5944234)
-material_override = SubResource("ShaderMaterial_d5oxj")
-mesh = SubResource("PrismMesh_hlj8m")
 skeleton = NodePath("../..")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
