@@ -196,6 +196,15 @@ collide_with_areas = true
 shape = SubResource("SphereShape3D_1jowa")
 disabled = true
 
+[node name="CastingBar" type="ProgressBar" parent="Player"]
+visible = false
+offset_left = 614.0
+offset_top = 143.0
+offset_right = 634.0
+offset_bottom = 292.0
+step = 1.0
+fill_mode = 3
+
 [node name="CameraCrane" type="SpringArm3D" parent="." node_paths=PackedStringArray("player")]
 shape = SubResource("SphereShape3D_rdsav")
 spring_length = -4.0

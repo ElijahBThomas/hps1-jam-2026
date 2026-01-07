@@ -3,13 +3,17 @@ extends CharacterBody3D
 const SPEED : float = 250.0
 const J_SPEED : float = 200.0
 const R_SPEED : float = 10.0
+const CAST_MAX_RANGE : float = 20
 var move_input : Vector3 = Vector3.ZERO
+var direction = "up"
 
 @export var cam_crane : SpringArm3D
 
 # This will be changed when the actual art comes in but is used in line 20
 @onready var mesh := $MeshInstance3D
 @onready var cast_reticle = $SpringArm3D/cast_reticle
+@onready var cast_bar = $CastingBar
+@onready var cast_distance = $SpringArm3D
 
 func input_listen():
 	if(Input.is_action_just_pressed("cast_state")):
@@ -43,17 +47,28 @@ func update_movement(delta):
 
 func aim_cast(delta):
 	move_input.x = Input.get_action_strength("move_left") - Input.get_action_strength("move_right")
-	move_input.z = Input.get_action_strength("move_forward") - Input.get_action_strength("move_backward")
+	#move_input.z = Input.get_action_strength("move_forward") - Input.get_action_strength("move_backward")
 	
 	var move_dir = move_input.normalized()
 	
 	mesh.rotate(Vector3.UP, move_dir.x * R_SPEED * delta)  
 	#cast_reticle.velocity.z = move_dir.z * SPEED * delta
 	
-	$SpringArm3D.spring_length += move_dir.z * SPEED * delta
+	cast_distance.spring_length = 5 + CAST_MAX_RANGE * (cast_bar.value / 100)
 
 func cast_rod():
-	pass
+	if(Input.is_action_just_pressed("cast_rod")):
+		cast_bar.visible = true
+	
+	if(Input.is_action_pressed("cast_rod")):
+		if(cast_bar.value == 100): direction = "down"
+		if(cast_bar.value == 0): direction = "up"
+		if(direction == "up"): cast_bar.value += cast_bar.step
+		if(direction == "down"): cast_bar.value -= cast_bar.step
+	
+	if(Input.is_action_just_released("cast_rod")):
+		cast_bar.visible = 0
+		cast_bar.value = 0
 
 func _physics_process(delta):
 	
@@ -64,7 +79,7 @@ func _physics_process(delta):
 		Globals.STATE.CAST:
 			cast_reticle.visible = true
 			aim_cast(delta)
-			pass
+			cast_rod()
 		Globals.STATE.FISH:
 			pass
 		Globals.STATE.BOAT:
