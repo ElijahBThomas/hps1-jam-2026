@@ -20,7 +20,7 @@ func update_movement(delta):
 		if(Time.get_unix_time_from_system() > last_action + JERK_COOLDOWN):
 			if(Input.is_action_just_pressed("move_left")):
 				#sets velocity vector to the vector halfway between the vector to player and it's horizontal perpendicular vector
-				var velocity = (vector_to_player + (vector_to_player).cross(Vector3.UP)) * JERK_SPEED * delta
+				var velocity = (vector_to_player - (vector_to_player).cross(Vector3.UP)) * JERK_SPEED * delta
 				apply_impulse(velocity)
 				last_action = Time.get_unix_time_from_system()
 			if(Input.is_action_just_pressed("move_right")):
