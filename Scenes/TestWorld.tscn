@@ -1,15 +1,16 @@
-[gd_scene load_steps=28 format=3 uid="uid://dkdwmjg42hf7i"]
+[gd_scene load_steps=31 format=3 uid="uid://dkdwmjg42hf7i"]
 
-[ext_resource type="Script" uid="uid://c6w44o6p1pv3o" path="res://scripts/Globals.gd" id="1_1jowa"]
+[ext_resource type="Script" uid="uid://c6w44o6p1pv3o" path="res://Scripts/Globals.gd" id="1_1jowa"]
 [ext_resource type="Shader" uid="uid://cf6vwpec67i6k" path="res://Art/Shaders/Godot-PSX-Visuals-main/Shaders/PSX Surface.gdshader" id="1_4snwc"]
 [ext_resource type="Texture2D" uid="uid://betmxvsifh2ph" path="res://Art/Placeholders/TemplateGrid_albedo.png" id="2_ed2pg"]
 [ext_resource type="PackedScene" uid="uid://cl5qipqdd3cf8" path="res://Prefeb/Player.tscn" id="3_ed2pg"]
 [ext_resource type="Shader" uid="uid://ceurxunkjgp56" path="res://Art/Shaders/TToT/BasePSX_Scroll.gdshader" id="5_g0pj6"]
-[ext_resource type="Script" uid="uid://cckssft4232i4" path="res://scripts/CamController.gd" id="5_rdsav"]
-[ext_resource type="Script" uid="uid://cywrpw3xvyn4h" path="res://scripts/cast_reticle.gd" id="6_4e6cy"]
+[ext_resource type="Script" uid="uid://cckssft4232i4" path="res://Scripts/CamController.gd" id="5_rdsav"]
+[ext_resource type="Script" uid="uid://cywrpw3xvyn4h" path="res://Scripts/cast_reticle.gd" id="6_4e6cy"]
 [ext_resource type="Texture2D" uid="uid://c027m0i2hmcl2" path="res://Art/Placeholders/TEX_Water.png" id="6_7oy3y"]
-[ext_resource type="Script" uid="uid://dug0imb1lxd23" path="res://scripts/spring_arm_3d.gd" id="6_77oos"]
+[ext_resource type="Script" uid="uid://dug0imb1lxd23" path="res://Scripts/spring_arm_3d.gd" id="6_77oos"]
 [ext_resource type="Texture2D" uid="uid://down4rerwshm8" path="res://Art/Placeholders/icon.svg" id="7_77oos"]
+[ext_resource type="Script" uid="uid://bgg1r1pk01mdm" path="res://Scripts/Fish3D.gd" id="11_0rqgs"]
 
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_g0pj6"]
 data = PackedVector3Array(-25, 0.5, 25, 25, 0.5, 25, -25, -0.5, 25, 25, 0.5, 25, 25, -0.5, 25, -25, -0.5, 25, 25, 0.5, -25, -25, 0.5, -25, 25, -0.5, -25, -25, 0.5, -25, -25, -0.5, -25, 25, -0.5, -25, 25, 0.5, 25, 25, 0.5, -25, 25, -0.5, 25, 25, 0.5, -25, 25, -0.5, -25, 25, -0.5, 25, -25, 0.5, -25, -25, 0.5, 25, -25, -0.5, -25, -25, 0.5, 25, -25, -0.5, 25, -25, -0.5, -25, 25, 0.5, 25, -25, 0.5, 25, 25, 0.5, -25, -25, 0.5, 25, -25, 0.5, -25, 25, 0.5, -25, -25, -0.5, 25, 25, -0.5, 25, -25, -0.5, -25, 25, -0.5, 25, 25, -0.5, -25, -25, -0.5, -25)
@@ -92,6 +93,16 @@ background_mode = 1
 ambient_light_source = 1
 reflected_light_source = 1
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_icgjy"]
+render_priority = 0
+shader = ExtResource("1_4snwc")
+shader_parameter/albedo = ExtResource("7_77oos")
+shader_parameter/emissionTint = Color(0, 0, 0, 0)
+shader_parameter/albedoTint = Color(1, 1, 1, 1)
+shader_parameter/alpha_scissor = 1.0
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_0rqgs"]
+
 [node name="World" type="Node3D"]
 script = ExtResource("1_1jowa")
 
@@ -156,7 +167,7 @@ skeleton = NodePath("../..")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -24, 50)
 shape = SubResource("ConcavePolygonShape3D_d5oxj")
 
-[node name="WaterArea" type="Area3D" parent="."]
+[node name="WaterArea" type="Area3D" parent="." groups=["Water"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -25, 50)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WaterArea"]
@@ -206,5 +217,17 @@ player = NodePath("../Player")
 transform = Transform3D(-1, 0, -8.742278e-08, -4.371139e-08, 0.8660254, 0.5, 7.5710346e-08, 0.5, -0.8660254, 0, 2.4374108, -2.6829157)
 environment = SubResource("Environment_ed2pg")
 fov = 60.0
+
+[node name="Fish3D" type="CharacterBody3D" parent="." node_paths=PackedStringArray("mesh", "pool")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4, 49)
+script = ExtResource("11_0rqgs")
+mesh = NodePath("MeshInstance3D")
+pool = NodePath("../WaterArea")
+metadata/_custom_type_script = "uid://bgg1r1pk01mdm"
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Fish3D"]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+material_override = SubResource("ShaderMaterial_icgjy")
+mesh = SubResource("CapsuleMesh_0rqgs")
 
 [editable path="Player"]
