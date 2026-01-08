@@ -1,6 +1,7 @@
 extends SpringArm3D
 
 @export var player : CharacterBody3D
+@export var hook : MeshInstance3D
 
 const SPEED : float = 500.0
 const EASE : float = 50.0
@@ -13,8 +14,12 @@ var controller_sensitivity : float = 2.0
 var menu_visible : bool = false
 
 func follow_target(delta):
-	var target: Vector3 = Vector3(player.global_position.x, player.global_position.y + y_offset, player.global_position.z)
-	global_position = lerp(global_position, target, 5 * delta)
+	if(Globals.state == Globals.STATE.FISH):
+		var target: Vector3 = Vector3(hook.global_position.x, hook.global_position.y + y_offset, hook.global_position.z)
+		global_position = lerp(global_position, target, 5 * delta)
+	else:
+		var target: Vector3 = Vector3(player.global_position.x, player.global_position.y + y_offset, player.global_position.z)
+		global_position = lerp(global_position, target, 5 * delta)
 
 func controller_rotation(delta):
 	move_input.x = Input.get_action_strength("cam_left") - Input.get_action_strength("cam_right")
@@ -32,6 +37,8 @@ func _input(event):
 			if event is InputEventMouseMotion && Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 				rotate(Vector3.UP, event.relative.x * -0.001)
 				transform = transform.orthonormalized()
+		Globals.STATE.FISH:
+			pass
 
 #func cast_cam_rotation(delta):
 	#move_input.x = Input.get_action_strength("move_left") - Input.get_action_strength("move_right")
@@ -55,7 +62,10 @@ func _physics_process(delta):
 			y_offset = 4 #move to state transition function
 			follow_target(delta)
 			global_rotation = player.mesh.global_rotation
-			pass
+		Globals.STATE.FISH:
+			spring_length = -6
+			y_offset = 2
+			follow_target(delta)
 
 func _process(_delta):
 	# Regaining mouse control when pressing escape and set up for later menu work

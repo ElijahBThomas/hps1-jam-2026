@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://dkdwmjg42hf7i"]
+[gd_scene load_steps=33 format=3 uid="uid://dkdwmjg42hf7i"]
 
 [ext_resource type="Script" uid="uid://c6w44o6p1pv3o" path="res://scripts/Globals.gd" id="1_1jowa"]
 [ext_resource type="Shader" uid="uid://cf6vwpec67i6k" path="res://Art/Shaders/Godot-PSX-Visuals-main/Shaders/PSX Surface.gdshader" id="1_4snwc"]
@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://c027m0i2hmcl2" path="res://Art/Placeholders/TEX_Water.png" id="6_7oy3y"]
 [ext_resource type="Script" uid="uid://dug0imb1lxd23" path="res://scripts/spring_arm_3d.gd" id="6_77oos"]
 [ext_resource type="Texture2D" uid="uid://down4rerwshm8" path="res://Art/Placeholders/icon.svg" id="7_77oos"]
+[ext_resource type="Script" uid="uid://couk0xxt8k8d3" path="res://scripts/HookScript.gd" id="11_0rqgs"]
 
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_g0pj6"]
 data = PackedVector3Array(-25, 0.5, 25, 25, 0.5, 25, -25, -0.5, 25, 25, 0.5, 25, 25, -0.5, 25, -25, -0.5, 25, 25, 0.5, -25, -25, 0.5, -25, 25, -0.5, -25, -25, 0.5, -25, -25, -0.5, -25, 25, -0.5, -25, 25, 0.5, 25, 25, 0.5, -25, 25, -0.5, 25, 25, 0.5, -25, 25, -0.5, -25, 25, -0.5, 25, -25, 0.5, -25, -25, 0.5, 25, -25, -0.5, -25, -25, 0.5, 25, -25, -0.5, 25, -25, -0.5, -25, 25, 0.5, 25, -25, 0.5, 25, 25, 0.5, -25, -25, 0.5, 25, -25, 0.5, -25, 25, 0.5, -25, -25, -0.5, 25, 25, -0.5, 25, -25, -0.5, -25, 25, -0.5, 25, 25, -0.5, -25, -25, -0.5, -25)
@@ -71,17 +72,17 @@ size = Vector2(50, 50)
 subdivide_width = 25
 subdivide_depth = 25
 
-[sub_resource type="SphereMesh" id="SphereMesh_1jowa"]
-radius = 0.25
-height = 0.5
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_0rqgs"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1jowa"]
 render_priority = 0
 shader = ExtResource("1_4snwc")
 shader_parameter/albedo = ExtResource("7_77oos")
 shader_parameter/emissionTint = Color(0, 0, 0, 0)
 shader_parameter/albedoTint = Color(1, 1, 1, 1)
 shader_parameter/alpha_scissor = 1.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_1jowa"]
+radius = 0.25
+height = 0.5
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_1jowa"]
 
@@ -91,6 +92,23 @@ shader_parameter/alpha_scissor = 1.0
 background_mode = 1
 ambient_light_source = 1
 reflected_light_source = 1
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_0rqgs"]
+friction = 0.5
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0rqgs"]
+render_priority = 0
+shader = ExtResource("1_4snwc")
+shader_parameter/albedo = ExtResource("7_77oos")
+shader_parameter/emissionTint = Color(0, 0, 0, 0)
+shader_parameter/albedoTint = Color(1, 1, 1, 1)
+shader_parameter/alpha_scissor = 1.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_icgjy"]
+radius = 0.25
+height = 0.5
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_0rqgs"]
 
 [node name="World" type="Node3D"]
 script = ExtResource("1_1jowa")
@@ -168,9 +186,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 23, 0)
 material_override = SubResource("ShaderMaterial_bnm2d")
 mesh = SubResource("PlaneMesh_1dj0o")
 
-[node name="Player" parent="." node_paths=PackedStringArray("cam_crane") instance=ExtResource("3_ed2pg")]
+[node name="Player" parent="." node_paths=PackedStringArray("cam_crane", "hook") instance=ExtResource("3_ed2pg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6163278, 0)
 cam_crane = NodePath("../CameraCrane")
+hook = NodePath("../Hook")
 
 [node name="SpringArm3D" type="SpringArm3D" parent="Player"]
 spring_length = 5.0
@@ -182,10 +201,10 @@ visible = false
 script = ExtResource("6_4e6cy")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Player/SpringArm3D/cast_reticle"]
+material_override = SubResource("ShaderMaterial_1jowa")
 cast_shadow = 0
 mesh = SubResource("SphereMesh_1jowa")
 skeleton = NodePath("")
-surface_material_override/0 = SubResource("ShaderMaterial_0rqgs")
 
 [node name="floor_raycast" type="RayCast3D" parent="Player/SpringArm3D/cast_reticle"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
@@ -205,15 +224,34 @@ offset_bottom = 292.0
 step = 1.0
 fill_mode = 3
 
-[node name="CameraCrane" type="SpringArm3D" parent="." node_paths=PackedStringArray("player")]
+[node name="CameraCrane" type="SpringArm3D" parent="." node_paths=PackedStringArray("player", "hook")]
 shape = SubResource("SphereShape3D_rdsav")
 spring_length = -4.0
 script = ExtResource("5_rdsav")
 player = NodePath("../Player")
+hook = NodePath("../Hook/HookMesh")
 
 [node name="Camera3D" type="Camera3D" parent="CameraCrane"]
 transform = Transform3D(-1, 0, -8.742278e-08, -4.371139e-08, 0.8660254, 0.5, 7.5710346e-08, 0.5, -0.8660254, 0, 2.4374108, -2.6829157)
 environment = SubResource("Environment_ed2pg")
 fov = 60.0
+
+[node name="Hook" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.13335049, 3.2526686, 0)
+mass = 0.1
+physics_material_override = SubResource("PhysicsMaterial_0rqgs")
+center_of_mass_mode = 1
+center_of_mass = Vector3(0, -0.1, 0)
+script = ExtResource("11_0rqgs")
+
+[node name="HookMesh" type="MeshInstance3D" parent="Hook"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
+material_override = SubResource("ShaderMaterial_0rqgs")
+mesh = SubResource("SphereMesh_icgjy")
+skeleton = NodePath("")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hook"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
+shape = SubResource("SphereShape3D_0rqgs")
 
 [editable path="Player"]

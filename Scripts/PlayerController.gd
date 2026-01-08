@@ -8,6 +8,7 @@ var move_input : Vector3 = Vector3.ZERO
 var direction = "up"
 
 @export var cam_crane : SpringArm3D
+@export var hook : RigidBody3D
 
 # This will be changed when the actual art comes in but is used in line 20
 @onready var mesh := $MeshInstance3D
@@ -67,16 +68,23 @@ func cast_rod():
 		if(direction == "down"): cast_bar.value -= cast_bar.step
 	
 	if(Input.is_action_just_released("cast_rod")):
+		hook.global_position = cast_reticle.global_position
+		hook.visible = 1 #TODO: put this in the hook controller/state transition function
 		cast_bar.visible = 0
 		cast_bar.value = 0
+		cast_reticle.visible = false
+		Globals.state = Globals.STATE.FISH
+		
 
 func _physics_process(delta):
 	
 	input_listen()
 	match Globals.state:
 		Globals.STATE.WALK:
+			hook.visible = 0 #TODO: put this in the hook controller/state transition function
 			update_movement(delta)
 		Globals.STATE.CAST:
+			hook.visible = 0 #TODO: put this in the hook controller/state transition function
 			cast_reticle.visible = true
 			aim_cast(delta)
 			cast_rod()
