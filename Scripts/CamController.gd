@@ -1,16 +1,23 @@
 extends SpringArm3D
 
-@export var player : CharacterBody3D
+@export var player : Node3D
 
-const SPEED : float = 500.0
+const SPEED : float = 800.0
 const EASE : float = 50.0
-var y_offset : float = 2.0
+var y_offset : float = 0.0
+@export var min_y_offset : float = 1.0;
+@export var max_y_offset : float = 4.0;
+@export var min_crane_length : float = -4.0
+@export var max_crane_length : float = -6.0
 
 var move_input : Vector2 = Vector2.ZERO
 var controller_sensitivity : float = 2.0
 
 # Will probably change this to stop the player from moving the character
 var menu_visible : bool = false
+
+@onready var shader_changer : Area3D = $Camera3D/ShaderChanger
+@onready var water_overlay:= $WaterOverlay
 
 func follow_target(delta):
 	var target: Vector3 = Vector3(player.global_position.x, player.global_position.y + y_offset, player.global_position.z)
@@ -46,13 +53,13 @@ func _ready():
 func _physics_process(delta):
 	match(Globals.state):
 		Globals.STATE.WALK:
-			spring_length = -4 #move to state transition function
-			y_offset = 2 #move to state transition function
+			spring_length = min_crane_length #move to state transition function
+			y_offset = min_y_offset #move to state transition function
 			follow_target(delta)
 			controller_rotation(delta)
 		Globals.STATE.CAST:
-			spring_length = -6 #move to state transition function
-			y_offset = 4 #move to state transition function
+			spring_length = max_crane_length #move to state transition function
+			y_offset = max_y_offset #move to state transition function
 			follow_target(delta)
 			global_rotation = player.mesh.global_rotation
 			pass
@@ -66,3 +73,9 @@ func _process(_delta):
 		else:
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 			menu_visible = false
+
+
+func _on_shader_changer_area_entered(area):
+	if area.is_in_group("Water"):
+		water_overlay.visible = true
+	# Will need to recheck on leave

@@ -1,16 +1,16 @@
 [gd_scene load_steps=33 format=3 uid="uid://dkdwmjg42hf7i"]
 
-[ext_resource type="Script" uid="uid://c6w44o6p1pv3o" path="res://scripts/Globals.gd" id="1_1jowa"]
+[ext_resource type="Script" uid="uid://c6w44o6p1pv3o" path="res://Scripts/Globals.gd" id="1_1jowa"]
 [ext_resource type="Shader" uid="uid://cf6vwpec67i6k" path="res://Art/Shaders/Godot-PSX-Visuals-main/Shaders/PSX Surface.gdshader" id="1_4snwc"]
 [ext_resource type="Texture2D" uid="uid://betmxvsifh2ph" path="res://Art/Placeholders/TemplateGrid_albedo.png" id="2_ed2pg"]
-[ext_resource type="PackedScene" uid="uid://cl5qipqdd3cf8" path="res://Prefeb/Player.tscn" id="3_ed2pg"]
+[ext_resource type="PackedScene" uid="uid://cl5qipqdd3cf8" path="res://Prefeb/Characters/Player.tscn" id="3_ed2pg"]
 [ext_resource type="Shader" uid="uid://ceurxunkjgp56" path="res://Art/Shaders/TToT/BasePSX_Scroll.gdshader" id="5_g0pj6"]
-[ext_resource type="Script" uid="uid://cckssft4232i4" path="res://scripts/CamController.gd" id="5_rdsav"]
-[ext_resource type="Script" uid="uid://cywrpw3xvyn4h" path="res://scripts/cast_reticle.gd" id="6_4e6cy"]
+[ext_resource type="Script" uid="uid://cckssft4232i4" path="res://Scripts/CamController.gd" id="5_rdsav"]
+[ext_resource type="Script" uid="uid://cywrpw3xvyn4h" path="res://Scripts/cast_reticle.gd" id="6_4e6cy"]
 [ext_resource type="Texture2D" uid="uid://c027m0i2hmcl2" path="res://Art/Placeholders/TEX_Water.png" id="6_7oy3y"]
-[ext_resource type="Script" uid="uid://dug0imb1lxd23" path="res://scripts/spring_arm_3d.gd" id="6_77oos"]
+[ext_resource type="Script" uid="uid://dug0imb1lxd23" path="res://Scripts/spring_arm_3d.gd" id="6_77oos"]
 [ext_resource type="Texture2D" uid="uid://down4rerwshm8" path="res://Art/Placeholders/icon.svg" id="7_77oos"]
-[ext_resource type="Script" uid="uid://couk0xxt8k8d3" path="res://scripts/HookScript.gd" id="11_0rqgs"]
+[ext_resource type="Script" path="res://scripts/HookScript.gd" id="11_0rqgs"]
 
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_g0pj6"]
 data = PackedVector3Array(-25, 0.5, 25, 25, 0.5, 25, -25, -0.5, 25, 25, 0.5, 25, 25, -0.5, 25, -25, -0.5, 25, 25, 0.5, -25, -25, 0.5, -25, 25, -0.5, -25, -25, 0.5, -25, -25, -0.5, -25, 25, -0.5, -25, 25, 0.5, 25, 25, 0.5, -25, 25, -0.5, 25, 25, 0.5, -25, 25, -0.5, -25, 25, -0.5, 25, -25, 0.5, -25, -25, 0.5, 25, -25, -0.5, -25, -25, 0.5, 25, -25, -0.5, 25, -25, -0.5, -25, 25, 0.5, 25, -25, 0.5, 25, 25, 0.5, -25, -25, 0.5, 25, -25, 0.5, -25, 25, 0.5, -25, -25, -0.5, 25, 25, -0.5, 25, -25, -0.5, -25, 25, -0.5, 25, 25, -0.5, -25, -25, -0.5, -25)

@@ -1,0 +1,39 @@
+[gd_scene load_steps=6 format=3 uid="uid://0hlx6dxnfuad"]
+
+[ext_resource type="Shader" uid="uid://w71un7tf2ywi" path="res://Art/Shaders/Camera/Underwater.gdshader" id="1_vowi7"]
+
+[sub_resource type="Gradient" id="Gradient_6pu3k"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(0, 0.3529412, 0.38431373, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_m5ykt"]
+gradient = SubResource("Gradient_6pu3k")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_c726j"]
+shader = ExtResource("1_vowi7")
+shader_parameter/color = SubResource("GradientTexture2D_m5ykt")
+shader_parameter/frequency = 0.008
+shader_parameter/amplitude = 0.008
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_giw1h"]
+viewport_path = NodePath("CamCrane/Camera3D/WaterOverlay/SubViewport")
+
+[node name="WaterOverlay" type="SubViewportContainer"]
+offset_right = 896.0
+offset_bottom = 512.0
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="."]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(896, 512)
+render_target_update_mode = 4
+
+[node name="Shader" type="TextureRect" parent="."]
+modulate = Color(3.080368e-06, 0.6310464, 0.48536974, 1)
+material = SubResource("ShaderMaterial_c726j")
+layout_mode = 2
+texture = SubResource("ViewportTexture_giw1h")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 2

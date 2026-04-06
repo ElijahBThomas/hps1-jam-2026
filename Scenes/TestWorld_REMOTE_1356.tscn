@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://c6w44o6p1pv3o" path="res://Scripts/Globals.gd" id="1_1jowa"]
 [ext_resource type="Shader" uid="uid://cf6vwpec67i6k" path="res://Art/Shaders/Godot-PSX-Visuals-main/Shaders/PSX Surface.gdshader" id="1_4snwc"]
 [ext_resource type="Texture2D" uid="uid://betmxvsifh2ph" path="res://Art/Placeholders/TemplateGrid_albedo.png" id="2_ed2pg"]
-[ext_resource type="PackedScene" uid="uid://cl5qipqdd3cf8" path="res://Prefeb/Player.tscn" id="3_ed2pg"]
+[ext_resource type="PackedScene" uid="uid://cl5qipqdd3cf8" path="res://Prefeb/Characters/Player.tscn" id="3_ed2pg"]
 [ext_resource type="Shader" uid="uid://ceurxunkjgp56" path="res://Art/Shaders/TToT/BasePSX_Scroll.gdshader" id="5_g0pj6"]
 [ext_resource type="Script" uid="uid://cckssft4232i4" path="res://Scripts/CamController.gd" id="5_rdsav"]
 [ext_resource type="Script" uid="uid://cywrpw3xvyn4h" path="res://Scripts/cast_reticle.gd" id="6_4e6cy"]
