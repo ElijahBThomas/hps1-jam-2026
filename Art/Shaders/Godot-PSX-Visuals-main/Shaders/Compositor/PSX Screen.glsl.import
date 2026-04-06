@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://d1gyke5gyb4v1"
+path="res://.godot/imported/PSX Screen.glsl-786a3a1a9ae390a8fdba7937c620fcec.res"
+
+[deps]
+
+source_file="res://Art/Shaders/Godot-PSX-Visuals-main/Shaders/Compositor/PSX Screen.glsl"
+dest_files=["res://.godot/imported/PSX Screen.glsl-786a3a1a9ae390a8fdba7937c620fcec.res"]
+
+[params]
+
