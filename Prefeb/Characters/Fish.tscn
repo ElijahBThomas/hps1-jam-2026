@@ -1,0 +1,90 @@
+[gd_scene load_steps=12 format=3 uid="uid://b1u0ymr8lqm0d"]
+
+[ext_resource type="Script" uid="uid://bgg1r1pk01mdm" path="res://Scripts/Fish3D.gd" id="1_jrjl6"]
+[ext_resource type="PackedScene" uid="uid://dswi8c0odoqv" path="res://Art/Models/Fish_Bass.glb" id="2_4f1my"]
+[ext_resource type="Material" uid="uid://bob1s2hp1q5kb" path="res://Art/Shaders/Fish/Bass.tres" id="3_wx1xn"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_jrjl6"]
+animation = &"Idle"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_4f1my"]
+animation = &"Idle_Swim"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_wx1xn"]
+animation = &"Fast_Swim"
+
+[sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_oj8ak"]
+blend_point_0/node = SubResource("AnimationNodeAnimation_4f1my")
+blend_point_0/pos = 0.049999997
+blend_point_1/node = SubResource("AnimationNodeAnimation_wx1xn")
+blend_point_1/pos = 0.3
+min_space = 0.0
+max_space = 0.5
+snap = 0.01
+value_label = "velocity"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_1vfu2"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_70s0t"]
+advance_mode = 2
+advance_condition = &"swimming"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_eg4wd"]
+xfade_time = 0.4
+advance_mode = 2
+advance_condition = &"idle"
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_fb0qf"]
+states/Idle/node = SubResource("AnimationNodeAnimation_jrjl6")
+states/Idle/position = Vector2(346, 100)
+states/Swim/node = SubResource("AnimationNodeBlendSpace1D_oj8ak")
+states/Swim/position = Vector2(504, 100)
+transitions = ["Start", "Idle", SubResource("AnimationNodeStateMachineTransition_1vfu2"), "Idle", "Swim", SubResource("AnimationNodeStateMachineTransition_70s0t"), "Swim", "Idle", SubResource("AnimationNodeStateMachineTransition_eg4wd")]
+graph_offset = Vector2(-28, -21)
+
+[node name="Fish3D" type="CharacterBody3D"]
+transform = Transform3D(3.005, 0, 0, 0, 3.005, 0, 0, 0, 3.005, 0, 0, 0)
+collision_layer = 2
+collision_mask = 2
+script = ExtResource("1_jrjl6")
+swim_speed = null
+drift_speed = null
+rot_speed = null
+strength = null
+fatigue = null
+roam_range = null
+idle_time = null
+bait_range = null
+name_tag = null
+price = null
+metadata/_custom_type_script = "uid://bgg1r1pk01mdm"
+
+[node name="Fish_Bass" parent="." instance=ExtResource("2_4f1my")]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0)
+
+[node name="Armature" parent="Fish_Bass" index="0"]
+transform = Transform3D(-1, 8.742278e-08, 3.821371e-15, 0, -4.371139e-08, 1, 8.742278e-08, 1, 4.371139e-08, 0, 0, 0)
+
+[node name="Skeleton3D" parent="Fish_Bass/Armature" index="0"]
+bones/0/rotation = Quaternion(6.951666e-09, -1.5069629e-09, 0.02019857, 0.99979603)
+bones/1/rotation = Quaternion(8.035056e-09, 1.0400775e-09, -0.028929006, 0.99958146)
+bones/2/rotation = Quaternion(1.7858531e-10, 1.5650491e-09, -0.05586019, 0.9984386)
+bones/3/rotation = Quaternion(1.709773e-09, 2.7578215e-09, -0.094802134, 0.99549615)
+bones/4/rotation = Quaternion(8.5961165e-07, 0.33186832, 0.94332576, 3.027949e-07)
+bones/5/rotation = Quaternion(0.996383, -0.005242805, -0.027490089, 0.08023566)
+
+[node name="Cube" parent="Fish_Bass/Armature/Skeleton3D" index="0"]
+material_override = ExtResource("3_wx1xn")
+
+[node name="AnimationTree" type="AnimationTree" parent="."]
+root_node = NodePath("../Fish_Bass")
+tree_root = SubResource("AnimationNodeStateMachine_fb0qf")
+anim_player = NodePath("../Fish_Bass/AnimationPlayer")
+parameters/conditions/idle = false
+parameters/conditions/swimming = false
+parameters/Swim/blend_position = -0.030234316
+
+[node name="RayCast3D" type="RayCast3D" parent="."]
+
+[editable path="Fish_Bass"]
