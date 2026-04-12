@@ -224,6 +224,10 @@ shader_parameter/emissionTint = Color(0, 0, 0, 0)
 shader_parameter/albedoTint = Color(1, 1, 1, 1)
 shader_parameter/alpha_scissor = 1.0
 
+[sub_resource type="SphereMesh" id="SphereMesh_1jowa"]
+radius = 0.25
+height = 0.5
+
 [sub_resource type="SphereShape3D" id="SphereShape3D_1jowa"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_rdsav"]
@@ -233,36 +237,22 @@ background_mode = 1
 ambient_light_source = 1
 reflected_light_source = 1
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_d5oxj"]
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_0rqgs"]
+friction = 0.5
 
-[sub_resource type="Gradient" id="Gradient_icgjy"]
-interpolation_mode = 1
-offsets = PackedFloat32Array(0)
-colors = PackedColorArray(0, 0.08627451, 0.22745098, 0.5568628)
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0rqgs"]
+render_priority = 0
+shader = ExtResource("1_4snwc")
+shader_parameter/albedo = ExtResource("7_77oos")
+shader_parameter/emissionTint = Color(0, 0, 0, 0)
+shader_parameter/albedoTint = Color(1, 1, 1, 1)
+shader_parameter/alpha_scissor = 1.0
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_l0hd3"]
-gradient = SubResource("Gradient_icgjy")
+[sub_resource type="SphereMesh" id="SphereMesh_icgjy"]
+radius = 0.25
+height = 0.5
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_hlj8m"]
-shader = ExtResource("12_icgjy")
-shader_parameter/colorA = SubResource("GradientTexture1D_l0hd3")
-shader_parameter/colorB = SubResource("GradientTexture1D_l0hd3")
-shader_parameter/frequency = 0.008
-shader_parameter/amplitude = 0.008
-
-[sub_resource type="Gradient" id="Gradient_bnm2d"]
-offsets = PackedFloat32Array(0)
-colors = PackedColorArray(0, 0, 0, 1)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_1dj0o"]
-gradient = SubResource("Gradient_bnm2d")
-
-[sub_resource type="Gradient" id="Gradient_l0hd3"]
-colors = PackedColorArray(0, 0.14509805, 0.18431373, 0.39215687, 0, 0.14509805, 0.18431373, 0.5882353)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_d5oxj"]
-gradient = SubResource("Gradient_l0hd3")
-fill_to = Vector2(0, 1)
+[sub_resource type="SphereShape3D" id="SphereShape3D_0rqgs"]
 
 [node name="World" type="Node3D"]
 script = ExtResource("1_1jowa")
@@ -350,10 +340,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 23, 0)
 material_override = SubResource("ShaderMaterial_bnm2d")
 mesh = SubResource("PlaneMesh_1dj0o")
 
-[node name="Player" type="CharacterBody3D" parent="." node_paths=PackedStringArray("cam_crane")]
+[node name="Player" parent="." node_paths=PackedStringArray("cam_crane", "hook") instance=ExtResource("3_ed2pg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6163278, 0)
 script = ExtResource("6_d5oxj")
 cam_crane = NodePath("../CameraCrane")
+hook = NodePath("../Hook")
 
 [node name="Mesh" parent="Player" instance=ExtResource("7_hlj8m")]
 transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, -1, 0)
@@ -433,10 +424,10 @@ visible = false
 script = ExtResource("6_4e6cy")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Player/SpringArm3D/cast_reticle"]
+material_override = SubResource("ShaderMaterial_1jowa")
 cast_shadow = 0
 mesh = SubResource("SphereMesh_1jowa")
 skeleton = NodePath("")
-surface_material_override/0 = SubResource("ShaderMaterial_0rqgs")
 
 [node name="floor_raycast" type="RayCast3D" parent="Player/SpringArm3D/cast_reticle"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
@@ -447,15 +438,21 @@ collide_with_areas = true
 shape = SubResource("SphereShape3D_1jowa")
 disabled = true
 
-[node name="CameraCrane" type="SpringArm3D" parent="." node_paths=PackedStringArray("player")]
+[node name="CastingBar" type="ProgressBar" parent="Player"]
+visible = false
+offset_left = 614.0
+offset_top = 143.0
+offset_right = 634.0
+offset_bottom = 292.0
+step = 1.0
+fill_mode = 3
+
+[node name="CameraCrane" type="SpringArm3D" parent="." node_paths=PackedStringArray("player", "hook")]
 shape = SubResource("SphereShape3D_rdsav")
 spring_length = -4.0
 script = ExtResource("5_rdsav")
 player = NodePath("../Player")
-min_y_offset = 3.0
-max_y_offset = 6.0
-min_crane_length = -3.0
-max_crane_length = -4.0
+hook = NodePath("../Hook/HookMesh")
 
 [node name="Camera3D" type="Camera3D" parent="CameraCrane"]
 transform = Transform3D(-1, 0, -8.742278e-08, -4.371139e-08, 0.8660254, 0.5, 7.5710346e-08, 0.5, -0.8660254, 0, 2.4374108, -2.6829157)
@@ -463,6 +460,25 @@ environment = SubResource("Environment_ed2pg")
 current = true
 fov = 60.0
 
+[node name="Hook" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.13335049, 3.2526686, 0)
+mass = 0.1
+physics_material_override = SubResource("PhysicsMaterial_0rqgs")
+center_of_mass_mode = 1
+center_of_mass = Vector3(0, -0.1, 0)
+script = ExtResource("11_0rqgs")
+
+[node name="HookMesh" type="MeshInstance3D" parent="Hook"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
+material_override = SubResource("ShaderMaterial_0rqgs")
+mesh = SubResource("SphereMesh_icgjy")
+skeleton = NodePath("")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hook"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
+shape = SubResource("SphereShape3D_0rqgs")
+
+[editable path="Player"]
 [node name="ShaderChanger" type="Area3D" parent="CameraCrane/Camera3D"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="CameraCrane/Camera3D/ShaderChanger"]
